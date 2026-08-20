@@ -3,6 +3,8 @@ name: Pull Request CI
 
 on:
   pull_request:
+  push:
+    branches: [main]
 
 permissions:
   contents: read
@@ -31,6 +33,12 @@ jobs:
 
       - name: Run test suite
         run: npm test
+
+      - name: Check version metadata
+        run: npm run check-version
+
+      - name: Family-core sync check
+        run: npm run check-family-core
 
       - name: Run build
         run: npm run build
