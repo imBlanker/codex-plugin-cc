@@ -1098,7 +1098,10 @@ export async function runAppServerTurn(cwd, options = {}) {
     throw new Error("Codex CLI is not installed or is missing required runtime support. Install it with `npm install -g @openai/codex`, then rerun `/codex:setup`.");
   }
 
-  return withAppServer(cwd, async (client) => {
+  // fork-addition: options.disableBroker routes through the direct client
+  // (no lazy shared broker), for one-shot callers like the review gate.
+  const runWith = options.disableBroker ? withDirectAppServer : withAppServer;
+  return runWith(cwd, async (client) => {
     let threadId;
 
     if (options.resumeThreadId) {
